@@ -1,17 +1,78 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sweet Shop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<button onclick="displayDate()">
-    qual a data de hoje?
-</button>
-<p id="demo"></p>
 
-<script>
-    function displayDate(){
-        const pHTMLElement = document.getElementById("demo")
+  <h1>Desserts</h1>
+  <div id="menu">
+    <div class="product">
+      <img src="https://via.placeholder.com/150" alt="Tiramisu">
+      <h2>Classic Tiramisu</h2>
+      <p>$5.50</p>
+      <button onclick="addToCart('Classic Tiramisu', 5.50)">Add to Cart</button>
+    </div>
 
-        pHTMLElement.innerHTML = Date()
+    <div class="product">
+      <img src="https://via.placeholder.com/150" alt="Panna Cotta">
+      <h2>Vanilla Panna Cotta</h2>
+      <p>$6.50</p>
+      <button onclick="addToCart('Vanilla Panna Cotta', 6.50)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://via.placeholder.com/150" alt="Crème Brûlée">
+      <h2>Vanilla Crème Brûlée</h2>
+      <p>$7.00</p>
+      <button onclick="addToCart('Vanilla Crème Brûlée', 7.00)">Add to Cart</button>
+    </div>
+  </div>
+
+  <aside id="cart">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <p><strong>Total:</strong> $<span id="cartTotal">0.00</span></p>
+    <button onclick="confirmOrder()">Confirm Order</button>
+  </aside>
+
+  <script>
+    const cart = [];
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCartUI();
     }
-</script>
+
+    function updateCartUI() {
+      const list = document.getElementById("cartItems");
+      list.innerHTML = "";
+      let total = 0;
+
+      cart.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.qty}x ${item.name} - $${(item.qty * item.price).toFixed(2)}`;
+        list.appendChild(li);
+        total += item.qty * item.price;
+      });
+
+      document.getElementById("cartTotal").textContent = total.toFixed(2);
+    }
+
+    function confirmOrder() {
+      alert("✅ Order Confirmed!\nThank you for your purchase!");
+      cart.length = 0;
+      updateCartUI();
+    }
+  </script>
 
 </body>
 </html>
+
