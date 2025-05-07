@@ -3,76 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <title>Sweet Shop</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
 
-  <h1>Desserts</h1>
-  <div id="menu">
-    <div class="product">
-      <img src="https://via.placeholder.com/150" alt="Tiramisu">
-      <h2>Classic Tiramisu</h2>
-      <p>$5.50</p>
-      <button onclick="addToCart('Classic Tiramisu', 5.50)">Add to Cart</button>
-    </div>
+  <main class="container">
+    <section class="menu">
+      <h1>Desserts</h1>
+      <div id="menu" class="product-grid"></div>
+    </section>
 
-    <div class="product">
-      <img src="https://via.placeholder.com/150" alt="Panna Cotta">
-      <h2>Vanilla Panna Cotta</h2>
-      <p>$6.50</p>
-      <button onclick="addToCart('Vanilla Panna Cotta', 6.50)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <img src="https://via.placeholder.com/150" alt="Crème Brûlée">
-      <h2>Vanilla Crème Brûlée</h2>
-      <p>$7.00</p>
-      <button onclick="addToCart('Vanilla Crème Brûlée', 7.00)">Add to Cart</button>
-    </div>
-  </div>
-
-  <aside id="cart">
-    <h2>Your Cart</h2>
-    <ul id="cartItems"></ul>
-    <p><strong>Total:</strong> $<span id="cartTotal">0.00</span></p>
-    <button onclick="confirmOrder()">Confirm Order</button>
-  </aside>
+    <aside id="cart">
+      <h2>Your Cart (<span id="cartCount">0</span>)</h2>
+      <ul id="cartItems"></ul>
+      <div class="total">
+        <strong>Order Total:</strong> $<span id="cartTotal">0.00</span>
+      </div>
+      <button onclick="confirmOrder()">Confirm Order</button>
+    </aside>
+  </main>
 
   <script>
-    const cart = [];
+    const products = [
+  { name: "Baklava", price: 5.50, image: "assets/images/image-baklava-desktop.jpg" },
+  { name: "Brownie", price: 6.50, image: "assets/images/image-brownie-desktop.jpg" },
+  { name: "Cake", price: 7.00, image: "assets/images/image-cake-desktop.jpg" },
+  { name: "Creme", price: 8.00, image: "assets/images/image-creme-brulee-desktop.jpg" },
+  { name: "Macaron", price: 7.50, image: "assets/images/image-macaron-desktop.jpg" },
+  { name: "Meringue", price: 8.50, image: "assets/images/image-meringue-desktop.jpg" },
+  { name: "Panna Cotta", price: 9.00, image: "assets/images/image-panna-cotta-desktop.jpg" },
+  { name: "Tiramisu", price: 9.50, image: "assets/images/image-tiramisu-desktop.jpg" },
+  { name: "Waffle", price: 10.00, image: "assets/images/image-waffle-desktop.jpg" },
+];
 
-    function addToCart(name, price) {
-      const existing = cart.find(item => item.name === name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ name, price, qty: 1 });
-      }
-      updateCartUI();
-    }
+const cart = [];
 
-    function updateCartUI() {
-      const list = document.getElementById("cartItems");
-      list.innerHTML = "";
-      let total = 0;
+function renderProducts() {
+  const menu = document.getElementById("menu");
+  products.forEach(prod => {
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      <img src="${prod.image}" alt="${prod.name}">
+      <h2>${prod.name}</h2>
+      <p>$${prod.price.toFixed(2)}</p>
+      <button onclick="addToCart('${prod.name}', ${prod.price})">Add to Cart</button>
+    `;
+    menu.appendChild(div);
+  });
+}
 
-      cart.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.qty}x ${item.name} - $${(item.qty * item.price).toFixed(2)}`;
-        list.appendChild(li);
-        total += item.qty * item.price;
-      });
+function addToCart(name, price) {
+  const existing = cart.find(item => item.name === name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name, price, qty: 1 });
+  }
+  updateCartUI();
+}
 
-      document.getElementById("cartTotal").textContent = total.toFixed(2);
-    }
+function removeFromCart(name) {
+  const index = cart.findIndex(item => item.name === name);
+  if (index !== -1) {
+    cart.splice(index, 1);
+    updateCartUI();
+  }
+}
 
-    function confirmOrder() {
-      alert("✅ Order Confirmed!\nThank you for your purchase!");
-      cart.length = 0;
-      updateCartUI();
-    }
-  </script>
+function updateCartUI() {
+  const cartItems = document.getElementById("cartItems");
+  const cartTotal = document.getElementById("cartTotal");
+  const cartCount = document.getElementById("cartCount");
+  cartItems.innerHTML = "";
 
+  let total = 0;
+  let count = 0;
+
+  cart.forEach(item => {
+    const li = document.createElement("li");
+    li.className = "cart-item";
+    li.innerHTML = `
+      <span>${item.qty}x ${item.name} - $${(item.qty * item.price).toFixed(2)}</span>
+      <button onclick="removeFromCart('${item.name}')">🗑️</button>
+    `;
+    cartItems.appendChild(li);
+    total += item.qty * item.price;
+    count += item.qty;
+  });
+
+  cartTotal.textContent = total.toFixed(2);
+  cartCount.textContent = count;
+}
+
+function confirmOrder() {
+  if (cart.length === 0) return alert("🛒 Your cart is empty!");
+  alert("✅ Order Confirmed! Thanks!");
+  cart.length = 0;
+  updateCartUI();
+}
+
+// Inicializa produtos ao carregar a página
+document.addEventListener("DOMContentLoaded", renderProducts);
+
+</script>
 </body>
 </html>
 
