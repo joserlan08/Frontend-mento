@@ -1,112 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sweet Shop</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu</title>
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-
-  <main class="container">
-    <section class="menu">
+  <main>
+    <section>
       <h1>Desserts</h1>
-      <div id="menu" class="product-grid"></div>
+      <div id="menu" class="menu"></div>
     </section>
-
-    <aside id="cart">
-      <h2>Your Cart (<span id="cartCount">0</span>)</h2>
+    <aside class="cart">
+      <h2>Your Cart</h2>
       <ul id="cartItems"></ul>
-      <div class="total">
-        <strong>Order Total:</strong> $<span id="cartTotal">0.00</span>
-      </div>
-      <button onclick="confirmOrder()">Confirm Order</button>
+      <p><strong>Total:</strong> $<span id="cartTotal">0.00</span></p>
+      <button id="confirmButton">Confirm Order</button>
     </aside>
   </main>
 
-  <script>
-    const products = [
-  { name: "Baklava", price: 5.50, image: "assets/images/image-baklava-desktop.jpg" },
-  { name: "Brownie", price: 6.50, image: "assets/images/image-brownie-desktop.jpg" },
-  { name: "Cake", price: 7.00, image: "assets/images/image-cake-desktop.jpg" },
-  { name: "Creme", price: 8.00, image: "assets/images/image-creme-brulee-desktop.jpg" },
-  { name: "Macaron", price: 7.50, image: "assets/images/image-macaron-desktop.jpg" },
-  { name: "Meringue", price: 8.50, image: "assets/images/image-meringue-desktop.jpg" },
-  { name: "Panna Cotta", price: 9.00, image: "assets/images/image-panna-cotta-desktop.jpg" },
-  { name: "Tiramisu", price: 9.50, image: "assets/images/image-tiramisu-desktop.jpg" },
-  { name: "Waffle", price: 10.00, image: "assets/images/image-waffle-desktop.jpg" },
-];
-
-const cart = [];
-
-function renderProducts() {
-  const menu = document.getElementById("menu");
-  products.forEach(prod => {
-    const div = document.createElement("div");
-    div.className = "product";
-    div.innerHTML = `
-      <img src="${prod.image}" alt="${prod.name}">
-      <h2>${prod.name}</h2>
-      <p>$${prod.price.toFixed(2)}</p>
-      <button onclick="addToCart('${prod.name}', ${prod.price})">Add to Cart</button>
-    `;
-    menu.appendChild(div);
-  });
-}
-
-function addToCart(name, price) {
-  const existing = cart.find(item => item.name === name);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ name, price, qty: 1 });
-  }
-  updateCartUI();
-}
-
-function removeFromCart(name) {
-  const index = cart.findIndex(item => item.name === name);
-  if (index !== -1) {
-    cart.splice(index, 1);
-    updateCartUI();
-  }
-}
-
-function updateCartUI() {
-  const cartItems = document.getElementById("cartItems");
-  const cartTotal = document.getElementById("cartTotal");
-  const cartCount = document.getElementById("cartCount");
-  cartItems.innerHTML = "";
-
-  let total = 0;
-  let count = 0;
-
-  cart.forEach(item => {
-    const li = document.createElement("li");
-    li.className = "cart-item";
-    li.innerHTML = `
-      <span>${item.qty}x ${item.name} - $${(item.qty * item.price).toFixed(2)}</span>
-      <button onclick="removeFromCart('${item.name}')">🗑️</button>
-    `;
-    cartItems.appendChild(li);
-    total += item.qty * item.price;
-    count += item.qty;
-  });
-
-  cartTotal.textContent = total.toFixed(2);
-  cartCount.textContent = count;
-}
-
-function confirmOrder() {
-  if (cart.length === 0) return alert("🛒 Your cart is empty!");
-  alert("✅ Order Confirmed! Thanks!");
-  cart.length = 0;
-  updateCartUI();
-}
-
-// Inicializa produtos ao carregar a página
-document.addEventListener("DOMContentLoaded", renderProducts);
-
-</script>
-</body>
-</html>
-
+  <!-- Injetando o JSON do data.json manualmente -->
+  <script id="productData" type="application/json">
+    [
+      {
+        "name": "Baklava",
+        "price": 5.5,
+        "image": "assets/images/image-baklava-desktop.jpg"
+      },
+      {
+        "name": "Brownie",
+        "price": 6.5,
+        "image": "assets/images/image-brownie-desktop.jpg"
+      },
+      {
+        "name": "Cake",
+        "price": 7.0,
+        "image": "assets/images/image-cake-desktop.jpg"
+      },
+      {
+        "name": "Creme",
+        "price": 8.0,
+        "image": "assets/images/image-creme-brulee-desktop.jpg"
+      },
+      {
+        "name": "Macaron",
+        "price": 7.5,
+        "image": "assets/images/image-macaron-desktop.jpg"
+      },
+      {
+        "name": "Meringue",
+        "price": 8.5,
+        "image": "assets/images/image-meringue-desktop.jpg"
+      },
+      {
+        "name": "Panna Cotta",
+        "price": 9.0,
+        "image": "assets/images/image-panna-cotta-desktop.jpg"
+      },
+      {
+        "name": "Tiramisu",
+        "price": 9.5,
+        "image": "assets/images/image-tiramisu-desktop.jpg"
+      },
+      {
+        "name": "Waffle",
+        "price": 10.0,
+        "image": "assets/images/image-waffle-desktop.jpg"
+      }
+    ]
+    </script>
+    
+    <script src="index.js"></script>
+</body></html>
